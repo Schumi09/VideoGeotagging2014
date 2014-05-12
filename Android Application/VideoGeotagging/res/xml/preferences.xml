@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:key="Camera" android:title="Camera"></PreferenceCategory>
+    <PreferenceCategory android:key="Storage" android:title="Storage">
+        <Preference android:key="upload_all" android:title="Upload All" android:selectable="true"/>
+        <Preference android:key="delete_all" android:title="Delete All" android:selectable="true"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>
