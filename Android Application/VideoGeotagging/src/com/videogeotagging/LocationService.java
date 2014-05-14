@@ -245,17 +245,18 @@ public class LocationService extends Service implements SensorEventListener{
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 
-    /*Calculating horizontal device heading by Accelerometer and Magnetic Field Sensor*/
+    /*Calculating device heading by Accelerometer and Magnetic Field Sensor*/
     @Override
     public void onSensorChanged(SensorEvent event) {
-    	
-		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-	        gravity = lowPass(event.values.clone(), gravity);
+    	/*Getting orientation of the Device and Magnetic Field Strength*/	
+	    if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+	    gravity = lowPass(event.values.clone(), gravity);
 	    }
+	    
 	    else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 	        geomagneticfield = lowPass(event.values.clone(), geomagneticfield);
 	    }
-
+	    /*Remapping Coordinate System for assuming that device is always tilted vertical and camera facing away*/ 	
 	    if (geomagneticfield != null && gravity != null) {
 	        if (SensorManager.getRotationMatrix (R_in, null, gravity, geomagneticfield)) {               
 	            SensorManager.remapCoordinateSystem (R_in, SensorManager.AXIS_X, SensorManager.AXIS_Z, R_out);
@@ -263,11 +264,11 @@ public class LocationService extends Service implements SensorEventListener{
 	        }
 	    }
 	    float headinghelp = hO[0]; //in radians
-	    heading = headinghelp;
-	    heading = convertHeading(heading);	    
+	    heading = headinghelp; //convertHeading did not take parameter otherwise
+	    heading = convertHeading(heading);	 //to degrees   
     }
     
-    /*Low Pass Filter for smoothing Magnetic Field Sensor */
+    /*Low Pass Filter for smoothing Sensor Data*/
     protected float[] lowPass( float[] input, float[] output ) {
 	    if ( output == null ) return input;     
 	    for ( int i=0; i<input.length; i++ ) {
@@ -277,7 +278,7 @@ public class LocationService extends Service implements SensorEventListener{
 	} 
   
     /* returning a 360 degree angle
-     * Compass function returns values between -180° and + 180°*/
+     * orientation function returns values between -180° and + 180°*/
     public double convertHeading(double value){
     	value = Math.toDegrees(value); //converting Radians to Degrees
     	
